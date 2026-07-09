@@ -1,6 +1,8 @@
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { sendMessage as sendChatMessage } from "../../../../api/chat";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 import {
   Leaf,
   Plus,
@@ -556,7 +558,15 @@ function MessageBubble({
             lineHeight: 1.65,
           }}
         >
-          {lang === "hi" && msg.textHindi ? msg.textHindi : msg.text}
+          {isUser ? (
+            lang === "hi" && msg.textHindi ? msg.textHindi : msg.text
+          ) : (
+            <div className="prose prose-sm max-w-none">
+              <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                {lang === "hi" && msg.textHindi ? msg.textHindi : msg.text}
+              </ReactMarkdown>
+            </div>
+          )}
         </div>
       </div>
     </motion.div>
