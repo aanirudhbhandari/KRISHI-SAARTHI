@@ -3,13 +3,14 @@ import { useNavigate } from "react-router-dom";
 import { Leaf, Menu, X, Sun, Moon } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useTheme } from "../../context/ThemeContext";
-import Login from "./SignIn";
+import { useAuth } from "../../context/AuthContext";
 
 export function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
   const navigate = useNavigate();
   const { t, i18n } = useTranslation();
   const { theme, toggleTheme } = useTheme();
+  const { isAuthenticated, signOut } = useAuth();
 
   const navLinks = [
     { name: t("navbar.about"), href: "#about" },
@@ -61,12 +62,21 @@ export function Navbar() {
         </div>
 
         <div className="flex items-center gap-3 ml-auto md:ml-0">
-          <button
-            className="hidden md:block text-[var(--primary)] text-sm font-medium px-4 py-2 border-[1.5px] border-[var(--primary)] rounded-[var(--radius)] hover:bg-[var(--secondary)] transition-colors"
-            onClick={() => navigate("/Login")}
-          >
-            {t("navbar.signIn")}
-          </button>
+          {!isAuthenticated ? (
+            <button
+              className="hidden md:block text-[var(--primary)] text-sm font-medium px-4 py-2 border-[1.5px] border-[var(--primary)] rounded-[var(--radius)] hover:bg-[var(--secondary)] transition-colors"
+              onClick={() => navigate("/login")}
+            >
+              {t("navbar.signIn")}
+            </button>
+          ) : (
+            <button
+              className="hidden md:block text-[var(--primary)] text-sm font-medium px-4 py-2 border-[1.5px] border-[var(--primary)] rounded-[var(--radius)] hover:bg-[var(--secondary)] transition-colors"
+              onClick={signOut}
+            >
+              {t("navbar.logout")}
+            </button>
+          )}
           <button
 
             onClick={() => navigate("/chat")}
@@ -116,12 +126,24 @@ export function Navbar() {
               {item.name}
             </a>
           ))}
-          <button
-            className="w-full py-3 border border-[var(--primary)] text-[var(--primary)] rounded-[var(--radius)] font-medium"
-            onClick={() => navigate("/Login")}
-          >
-            {t("navbar.signIn")}
-          </button>
+          {!isAuthenticated ? (
+            <button
+              className="w-full py-3 border border-[var(--primary)] text-[var(--primary)] rounded-[var(--radius)] font-medium"
+              onClick={() => navigate("/login")}
+            >
+              {t("navbar.signIn")}
+            </button>
+          ) : (
+            <button
+              className="w-full py-3 border border-[var(--primary)] text-[var(--primary)] rounded-[var(--radius)] font-medium"
+              onClick={() => {
+                signOut();
+                setMenuOpen(false);
+              }}
+            >
+              {t("navbar.logout")}
+            </button>
+          )}
           <button
             className="w-full bg-[var(--primary)] text-[var(--primary-foreground)] font-medium py-3 rounded-[var(--radius)]"
             onClick={() => { navigate("/chat"); setMenuOpen(false); }}

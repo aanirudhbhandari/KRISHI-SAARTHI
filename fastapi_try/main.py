@@ -3,12 +3,13 @@ from fastapi import FastAPI, HTTPException, status
 
 from src.databse.base import Base
 from src.databse.database import engine
-from dtos import ProductDto
-from mock import products
 from src.users.router import router as user_router
 from src.chat.router import router as chat_router
 # pyrefly: ignore [missing-import]
 from fastapi.middleware.cors import CORSMiddleware
+from src.auth.router import router as auth_router
+
+
 
 app = FastAPI(title="Product Management API")
 
@@ -29,6 +30,7 @@ app.add_middleware(
 Base.metadata.create_all(bind=engine)
 
 
+app.include_router(auth_router)
 app.include_router(user_router)
 app.include_router(chat_router)
     
@@ -36,17 +38,8 @@ app.include_router(chat_router)
 def home():
     return {"message":"hello , welcome to krishi-Saarthi"}   
 
-@app.get("/products/{product_id}")
 
-def get_product(product_id:int):
-    for oneProduct in products:
-        if oneProduct.get("id")==product_id:            
-            return oneProduct
-    
-    raise HTTPException(
-        status_code=404,
-        detail="product not found"
-    )
+
 
 
 

@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import i18n from "../../i18n";
 import { I18nextProvider } from "react-i18next";
 import { motion, AnimatePresence } from "framer-motion";
+import { loginUser } from "../../../../api/auth";
 import {
   ChevronRight,
   Leaf,
@@ -16,10 +17,13 @@ import {
   AlertCircle,
   Loader2,
   Globe,
+  Eye,
+  EyeOff,
 } from "lucide-react";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
+import { Checkbox } from "../ui/checkbox";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "../ui/tabs";
 import {
   Card,
@@ -29,23 +33,27 @@ import {
   CardContent,
   CardFooter,
 } from "../ui/card";
+import { useAuth } from "../../context/AuthContext";
 
 function Login() {
   const navigate = useNavigate();
   const { t } = useTranslation();
+  const { signIn } = useAuth();
 
   // Form states
   const [phoneNumber, setPhoneNumber] = useState("");
   const [otp, setOtp] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [rememberMe, setRememberMe] = useState(false);
 
   // Flow states
   const [otpSent, setOtpSent] = useState(false);
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState("");
-  const [activeTab, setActiveTab] = useState("phone");
+  const [activeTab, setActiveTab] = useState("email");
 
   // Clear errors when changing tabs
   useEffect(() => {
@@ -55,7 +63,11 @@ function Login() {
     setOtp("");
     setEmail("");
     setPassword("");
+    setShowPassword(false);
+    setRememberMe(false);
   }, [activeTab]);
+
+  const isValidEmail = (value: string) => /\S+@\S+\.\S+/.test(value);
 
   // Handle Mock Phone Send OTP
   const handleSendOtp = (e: React.FormEvent) => {
@@ -101,9 +113,11 @@ function Login() {
   };
 
   // Handle Mock Email Login
-  const handleEmailLogin = (e: React.FormEvent) => {
+  const handleEmailLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!email || !password) {
+    const normalizedEmail = email.trim().toLowerCase();
+
+    if (!normalizedEmail || !password) {
       setError(
         i18n.language === "en"
           ? "Please fill in all fields."
@@ -111,16 +125,62 @@ function Login() {
       );
       return;
     }
+
+    if (!isValidEmail(normalizedEmail)) {
+      setError(
+        i18n.language === "en"
+          ? "Please enter a valid email address."
+          : "कृपया एक वैध ईमेल पता दर्ज करें।"
+      );
+      return;
+    }
+
+    if (password.length < 6) {
+      setError(
+        i18n.language === "en"
+          ? "Password must be at least 6 characters long."
+          : "पासवर्ड कम से कम 6 अक्षरों का होना चाहिए।"
+      );
+      return;
+    }
+
     setError("");
     setLoading(true);
 
-    setTimeout(() => {
-      setLoading(false);
+    try {
+      const response = await loginUser({
+        email: normalizedEmail,
+        password,
+      });
+
+      console.log(response);
+
+      signIn(
+        response.user,
+        response.access_token,
+        {
+          persist: rememberMe,
+        }
+      );
+
       setSuccess(true);
+
       setTimeout(() => {
         navigate("/chat");
-      }, 1500);
-    }, 1200);
+      }, 1200);
+
+    } catch (err: any) {
+      console.error(err);
+
+      setError(
+        err?.message ??
+        "Invalid email or password."
+      );
+
+    } finally {
+      setLoading(false);
+    }
+
   };
 
   // Handle Mock Google Sign In
@@ -244,7 +304,7 @@ function Login() {
               ) : (
                 <>
                   <Tabs
-                    defaultValue="phone"
+                    defaultValue="email"
                     value={activeTab}
                     onValueChange={setActiveTab}
                     className="w-full"
@@ -377,6 +437,7 @@ function Login() {
                               id="email"
                               type="email"
                               placeholder={t("signIn.emailPlaceholder")}
+                              autoFocus
                               disabled={loading}
                               value={email}
                               onChange={(e) => setEmail(e.target.value)}
@@ -396,14 +457,40 @@ function Login() {
                             />
                             <Input
                               id="password"
-                              type="password"
+                              type={showPassword ? "text" : "password"}
                               placeholder={t("signIn.passwordPlaceholder")}
                               disabled={loading}
                               value={password}
                               onChange={(e) => setPassword(e.target.value)}
-                              className="pl-10 text-sm"
+                              className="pl-10 pr-10 text-sm"
                             />
+                            <button
+                              type="button"
+                              onClick={() => setShowPassword((current) => !current)}
+                              className="absolute right-3.5 text-muted-foreground hover:text-foreground transition-colors"
+                              aria-label={showPassword ? "Hide password" : "Show password"}
+                            >
+                              {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                            </button>
                           </div>
+                          <div className="flex justify-end">
+                            <button
+                              type="button"
+                              className="text-[11px] font-semibold text-primary hover:underline"
+                            >
+                              Forgot Password?
+                            </button>
+                          </div>
+                        </div>
+
+                        <div className="flex items-center justify-between gap-3">
+                          <label className="flex items-center gap-2 text-xs text-muted-foreground select-none cursor-pointer">
+                            <Checkbox
+                              checked={rememberMe}
+                              onCheckedChange={(checked) => setRememberMe(checked === true)}
+                            />
+                            <span>Remember Me</span>
+                          </label>
                         </div>
 
                         <Button
@@ -469,7 +556,11 @@ function Login() {
             <CardFooter className="flex flex-col items-center justify-center pt-2 pb-6 text-xs text-muted-foreground space-y-1 border-t border-border/40 mt-4 bg-muted/10">
               <div className="flex items-center gap-1">
                 <span>{t("signIn.dontHaveAccount")}</span>
-                <button className="text-primary hover:underline font-semibold">
+                <button
+                  type="button"
+                  onClick={() => navigate("/register")}
+                  className="text-primary hover:underline font-semibold"
+                >
                   {t("signIn.register")}
                 </button>
               </div>

@@ -25,8 +25,10 @@ import {
   ImageIcon,
   Sun,
   Moon,
+  LogOut,
 } from "lucide-react";
 import { useTheme } from "../../context/ThemeContext";
+import { useAuth } from "../../context/AuthContext";
 
 /* ─── Types ─────────────────────────────────────────────── */
 type Lang = "en" | "hi";
@@ -178,6 +180,7 @@ const LABELS: Record<Lang, Record<string, string>> = {
     confidence: "Confidence",
     attach: "Attach photo",
     voice: "Voice query",
+    logout: "Log Out",
   },
   hi: {
     newConsult: "+ नई परामर्श",
@@ -197,6 +200,7 @@ const LABELS: Record<Lang, Record<string, string>> = {
     confidence: "विश्वास",
     attach: "फ़ोटो संलग्न करें",
     voice: "आवाज़ क्वेरी",
+    logout: "लॉग आउट",
   },
 };
 
@@ -583,6 +587,7 @@ export default function ChatbotPage() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [micActive, setMicActive] = useState(false);
   const { theme, toggleTheme } = useTheme();
+  const { signOut } = useAuth();
   const bottomRef = useRef<HTMLDivElement>(null);
   const fileRef = useRef<HTMLInputElement>(null);
   const labels = LABELS[lang];
@@ -848,6 +853,14 @@ export default function ChatbotPage() {
             <Settings size={27} color="rgba(255,255,255,0.35)" />
             <span>{labels.settings}</span>
           </button>
+          <button
+            onClick={signOut}
+            className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl transition-colors hover:bg-white/5"
+            style={{ color: "rgba(255,255,255,0.6)", fontSize: "0.87rem" }}
+          >
+            <LogOut size={16} color="rgba(255,255,255,0.35)" />
+            <span>{labels.logout}</span>
+          </button>
         </div>
       </aside>
 
@@ -925,6 +938,19 @@ export default function ChatbotPage() {
             >
               <Download size={14} />
               <span className="hidden sm:inline">{labels.export}</span>
+            </button>
+            <button
+              onClick={signOut}
+              className="flex items-center gap-2 px-3 py-2 rounded-xl transition-colors hover:bg-[var(--secondary)]"
+              style={{
+                border: "1px solid var(--border)",
+                color: "var(--primary)",
+                fontSize: "0.83rem",
+                fontWeight: 500,
+              }}
+            >
+              <LogOut size={14} />
+              <span className="hidden sm:inline">{labels.logout}</span>
             </button>
           </div>
         </header>
