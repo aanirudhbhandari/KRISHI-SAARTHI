@@ -16,7 +16,7 @@ router = APIRouter(
 )
 
 
-@router.post("/",response_model=ChatResponse)
+@router.post("",response_model=ChatResponse)
 def chat_with_ai(
     data:ChatRequest,
     current_user: User = Depends(get_current_user)

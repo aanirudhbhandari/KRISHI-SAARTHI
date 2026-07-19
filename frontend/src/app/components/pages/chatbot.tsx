@@ -204,6 +204,19 @@ const LABELS: Record<Lang, Record<string, string>> = {
   },
 };
 
+const SUGGESTIONS: Record<Lang, string[]> = {
+  en: [
+    "What is causing yellow leaves on my wheat?",
+    "How can I control fungal growth in my field?",
+    "Give me a quick irrigation plan for today.",
+  ],
+  hi: [
+    "मेरी गेहूं की पत्तियों पर पीला रंग क्यों आ रहा है?",
+    "मेरे खेत में कवक वृद्धि को कैसे नियंत्रित करूं?",
+    "आज के लिए एक त्वरित सिंचाई योजना दीजिए।",
+  ],
+};
+
 /* ─── Sub-components ─────────────────────────────────────── */
 
 function TypingIndicator() {
@@ -580,7 +593,7 @@ function MessageBubble({
 /* ─── Main Component ─────────────────────────────────────── */
 export default function ChatbotPage() {
   const [lang, setLang] = useState<Lang>("en");
-  const [messages, setMessages] = useState<ChatMessage[]>(SEED_MESSAGES);
+  const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState("");
   const [typing, setTyping] = useState(false);
   const [activeHistory, setActiveHistory] = useState("h1");
@@ -590,7 +603,9 @@ export default function ChatbotPage() {
   const { signOut } = useAuth();
   const bottomRef = useRef<HTMLDivElement>(null);
   const fileRef = useRef<HTMLInputElement>(null);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
   const labels = LABELS[lang];
+  const suggestions = SUGGESTIONS[lang];
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -619,15 +634,15 @@ export default function ChatbotPage() {
     setTyping(true);
 
     try {
-      const response = await sendChatMessage({
+      const response = (await sendChatMessage({
         message: trimmed,
-      });
+      })) as { reply?: string };
 
       const aiMsg: ChatMessage = {
         id: `m${Date.now()}-ai`,
         role: "ai",
         type: "text",
-        text: response.reply,
+        text: response.reply ?? "I’m here to help with your crop question.",
         timestamp: new Date().toLocaleTimeString("en-IN", {
           hour: "2-digit",
           minute: "2-digit",
@@ -650,25 +665,23 @@ export default function ChatbotPage() {
   }
 
   function startNewConsult() {
-    setMessages([
-      {
-        id: `new-${Date.now()}`,
-        role: "ai",
-        type: "text",
-        text:
-          lang === "en"
-            ? "New consultation started. What crop issue can I help you with today?"
-            : "नई परामर्श शुरू हुई। आज मैं आपकी किस फसल समस्या में मदद कर सकता हूँ?",
-        timestamp: new Date().toLocaleTimeString("en-IN", { hour: "2-digit", minute: "2-digit" }),
-      },
-    ]);
+    setMessages([]);
+    setInput("");
     setSidebarOpen(false);
+  }
+
+  function handleSuggestionClick(text: string) {
+    setInput(text);
+    textareaRef.current?.focus();
   }
 
   return (
     <div
       className="flex h-screen overflow-hidden"
-      style={{ fontFamily: "'Inter', sans-serif", background: "var(--background)" }}
+      style={{
+        fontFamily: "'Inter', sans-serif",
+        background: "linear-gradient(135deg, #f6fdf0 0%, #ebf8e2 45%, #f8fdf4 100%)",
+      }}
     >
       {/* ── Sidebar overlay on mobile ── */}
       <AnimatePresence>
@@ -960,11 +973,69 @@ export default function ChatbotPage() {
           className="flex-1 overflow-y-auto px-5 md:px-8 py-6"
           style={{ scrollbarWidth: "thin", scrollbarColor: "var(--border) transparent" }}
         >
-          <div className="max-w-3xl mx-auto">
-            {messages.map((msg) => (
-              <MessageBubble key={msg.id} msg={msg} lang={lang} labels={labels} />
-            ))}
-            {typing && <TypingIndicator />}
+          <div className="max-w-3xl mx-auto h-full">
+            {messages.length === 0 && !typing ? (
+              <div className="flex h-full min-h-[420px] items-center justify-center">
+                <div
+                  className="w-full max-w-xl rounded-[28px] border border-[rgba(45,106,47,0.12)] p-8 text-center shadow-[0_20px_60px_rgba(45,106,47,0.08)] backdrop-blur-sm"
+                  style={{ background: "rgba(255,255,255,0.78)" }}
+                >
+                  <div
+                    className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full"
+                    style={{ background: "linear-gradient(135deg, #7fbf4d 0%, #4f8f34 100%)" }}
+                  >
+                    <Leaf size={24} color="#fff" />
+                  </div>
+                  <h3
+                    style={{
+                      fontSize: "1.15rem",
+                      fontWeight: 700,
+                      color: "var(--foreground)",
+                      marginBottom: "0.45rem",
+                    }}
+                  >
+                    {lang === "en" ? "How can Krishi AI help you today?" : "आज कृषि AI आपकी किस तरह मदद कर सकता है?"}
+                  </h3>
+                  <p
+                    style={{
+                      fontSize: "0.92rem",
+                      lineHeight: 1.7,
+                      color: "var(--muted-foreground)",
+                    }}
+                  >
+                    {lang === "en"
+                      ? "Ask about crops, soil, pests, irrigation, or upload a photo for quick guidance."
+                      : "फसल, मिट्टी, कीट, सिंचाई के बारे में पूछें या त्वरित मार्गदर्शन के लिए फोटो अपलोड करें।"}
+                  </p>
+                  <div className="mt-6 flex flex-wrap justify-center gap-2">
+                    {[
+                      lang === "en" ? "Crop disease" : "फसल रोग",
+                      lang === "en" ? "Soil advice" : "मिट्टी सलाह",
+                      lang === "en" ? "Weather plan" : "मौसम योजना",
+                    ].map((chip) => (
+                      <span
+                        key={chip}
+                        className="rounded-full px-3 py-1.5 text-sm"
+                        style={{
+                          background: "rgba(122,182,72,0.12)",
+                          color: "var(--primary)",
+                          border: "1px solid rgba(122,182,72,0.2)",
+                        }}
+                      >
+                        {chip}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <>
+                {messages.map((msg) => (
+                  <MessageBubble key={msg.id} msg={msg} lang={lang} labels={labels} />
+                ))}
+                {typing && <TypingIndicator />}
+              </>
+            )}
             <div ref={bottomRef} />
           </div>
         </div>
@@ -973,11 +1044,29 @@ export default function ChatbotPage() {
         <div
           className="flex-shrink-0 px-5 md:px-8 py-4"
           style={{
-            background: "var(--card)",
-            borderTop: "1px solid var(--border)",
+            background: "rgba(255,255,255,0.72)",
+            borderTop: "1px solid rgba(45,106,47,0.12)",
+            backdropFilter: "blur(10px)",
           }}
         >
           <div className="max-w-3xl mx-auto">
+            <div className="mb-3 flex flex-wrap gap-2">
+              {suggestions.map((suggestion) => (
+                <button
+                  key={suggestion}
+                  onClick={() => handleSuggestionClick(suggestion)}
+                  className="rounded-full border px-3 py-2 text-left text-sm transition-all hover:-translate-y-0.5 hover:bg-[rgba(122,182,72,0.12)]"
+                  style={{
+                    background: "rgba(255,255,255,0.8)",
+                    borderColor: "rgba(45,106,47,0.14)",
+                    color: "var(--primary)",
+                  }}
+                >
+                  {suggestion}
+                </button>
+              ))}
+            </div>
+
             <div
               className="flex items-end gap-2 px-4 py-3 rounded-2xl"
               style={{
@@ -1015,6 +1104,7 @@ export default function ChatbotPage() {
 
               {/* Text input */}
               <textarea
+                ref={textareaRef}
                 rows={1}
                 value={input}
                 onChange={(e) => {
