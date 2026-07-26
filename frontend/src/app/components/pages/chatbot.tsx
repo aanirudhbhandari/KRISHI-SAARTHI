@@ -26,9 +26,11 @@ import {
   Sun,
   Moon,
   LogOut,
+  Home,
 } from "lucide-react";
 import { useTheme } from "../../context/ThemeContext";
 import { useAuth } from "../../context/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 /* ─── Types ─────────────────────────────────────────────── */
 type Lang = "en" | "hi";
@@ -181,6 +183,7 @@ const LABELS: Record<Lang, Record<string, string>> = {
     attach: "Attach photo",
     voice: "Voice query",
     logout: "Log Out",
+    home: "Home",
   },
   hi: {
     newConsult: "+ नई परामर्श",
@@ -201,6 +204,7 @@ const LABELS: Record<Lang, Record<string, string>> = {
     attach: "फ़ोटो संलग्न करें",
     voice: "आवाज़ क्वेरी",
     logout: "लॉग आउट",
+    home: "मुख्य पृष्ठ",
   },
 };
 
@@ -592,6 +596,7 @@ function MessageBubble({
 
 /* ─── Main Component ─────────────────────────────────────── */
 export default function ChatbotPage() {
+  const navigate = useNavigate();
   const [lang, setLang] = useState<Lang>("en");
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState("");
@@ -718,21 +723,26 @@ export default function ChatbotPage() {
           style={{ borderBottom: "1px solid rgba(255,255,255,0.07)" }}
         >
           <div
-            className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0"
-            style={{ background: "var(--accent)" }}
+            onClick={() => navigate("/")}
+            className="flex items-center gap-2.5 cursor-pointer transition-opacity hover:opacity-80"
           >
-            <Leaf size={15} color="#fff" />
+            <div
+              className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0"
+              style={{ background: "var(--accent)" }}
+            >
+              <Leaf size={15} color="#fff" />
+            </div>
+            <span
+              style={{
+                fontFamily: "'Playfair Display', serif",
+                fontWeight: 600,
+                fontSize: "1rem",
+                color: "#fff",
+              }}
+            >
+              Krishi Saarthi
+            </span>
           </div>
-          <span
-            style={{
-              fontFamily: "'Playfair Display', serif",
-              fontWeight: 600,
-              fontSize: "1rem",
-              color: "#fff",
-            }}
-          >
-            Krishi Saarthi
-          </span>
           <button
             className="ml-auto md:hidden"
             onClick={() => setSidebarOpen(false)}
@@ -840,6 +850,14 @@ export default function ChatbotPage() {
           style={{ borderTop: "1px solid rgba(255,255,255,0.07)" }}
         >
           <button
+            onClick={() => navigate("/")}
+            className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl transition-colors hover:bg-white/5"
+            style={{ color: "rgba(255,255,255,0.6)", fontSize: "0.87rem" }}
+          >
+            <Home size={16} color="var(--accent)" />
+            <span>{labels.home}</span>
+          </button>
+          <button
             onClick={() => setLang(lang === "en" ? "hi" : "en")}
             className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl transition-colors hover:bg-white/5"
             style={{ color: "rgba(255,255,255,0.6)", fontSize: "0.87rem" }}
@@ -930,6 +948,20 @@ export default function ChatbotPage() {
           </div>
 
           <div className="flex items-center gap-2">
+            <button
+              onClick={() => navigate("/")}
+              className="flex items-center gap-2 px-3 py-2 rounded-xl transition-colors hover:bg-[var(--secondary)]"
+              style={{
+                border: "1px solid var(--border)",
+                color: "var(--primary)",
+                fontSize: "0.83rem",
+                fontWeight: 500,
+              }}
+              aria-label="Go to Home"
+            >
+              <Home size={14} />
+              <span className="hidden sm:inline">{labels.home}</span>
+            </button>
             <button
               onClick={toggleTheme}
               className="flex items-center justify-center p-2 rounded-xl transition-colors hover:bg-[var(--secondary)] text-[var(--primary)]"
