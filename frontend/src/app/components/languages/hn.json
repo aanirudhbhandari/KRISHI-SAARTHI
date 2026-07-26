@@ -4,9 +4,10 @@
     "about": "हमारे बारे में",
     "features": "विशेषताएं",
     "howItWorks": "यह कैसे काम करता है",
-    "signIn": "साइन इन करें",
+    "signIn": "रजिस्टर / साइन इन करें",
     "getStarted": "शुरू करें !!",
-    "languageToggle": "भाषा"
+    "languageToggle": "भाषा",
+    "logout": "लॉग आउट"
   },
   "hero": {
     "fieldAssistant": "एआई-संचालित फील्ड सहायक",

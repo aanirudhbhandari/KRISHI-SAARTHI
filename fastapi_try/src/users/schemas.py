@@ -4,6 +4,7 @@ from pydantic import BaseModel
 class UserCreate(BaseModel):
     name:str
     email:str
+    password: str
 
 class UserResponse(BaseModel):
     id:int
@@ -13,3 +14,7 @@ class UserResponse(BaseModel):
     model_config={
         "from_attributes":True
     }
+
+class UserUpdate(BaseModel):
+    name:str
+    email:str    

@@ -4,9 +4,10 @@
     "about": "About",
     "features": "Features",
     "howItWorks": "How It Works",
-    "signIn": "Sign In",
+    "signIn": "Register/Sign In",
     "getStarted": "Get Started !!",
-    "languageToggle": "Language"
+    "languageToggle": "Language",
+    "logout": "Log Out"
   },
   "hero": {
     "fieldAssistant": "AI-POWERED FIELD ASSISTANT",
