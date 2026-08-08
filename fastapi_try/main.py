@@ -11,11 +11,12 @@ from src.auth.router import router as auth_router
 
 
 
-app = FastAPI(title="Product Management API")
+import os
 
-origins = [
-    "http://localhost:5173",
-]
+app = FastAPI(title="Krishi Saarthi API")
+
+raw_origins = os.getenv("ALLOWED_ORIGINS", "http://localhost:5173,http://localhost:3000")
+origins = [origin.strip() for origin in raw_origins.split(",") if origin.strip()]
 
 app.add_middleware(
     CORSMiddleware,

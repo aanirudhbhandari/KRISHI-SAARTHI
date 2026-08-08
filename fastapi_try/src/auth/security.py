@@ -1,11 +1,13 @@
+import os
+from datetime import datetime, timedelta, timezone
+
 # pyrefly: ignore [missing-import]
 from fastapi import Depends, HTTPException
 # pyrefly: ignore [missing-import]
 from fastapi.security import OAuth2PasswordBearer
 # pyrefly: ignore [missing-import]
 from pwdlib import PasswordHash
-from jose import jwt,JWTError
-from datetime import datetime, timedelta, timezone
+from jose import jwt, JWTError
 from sqlalchemy.orm import Session
 from src.databse.database import get_db
 from src.users.models import User
@@ -16,11 +18,9 @@ oauth2_scheme = OAuth2PasswordBearer(
     tokenUrl="/auth/login"
 )
 
-SECRET_KEY = "your-super-secret-key"
-
-ALGORITHM = "HS256"
-
-ACCESS_TOKEN_EXPIRE_MINUTES = 60
+SECRET_KEY = os.getenv("SECRET_KEY", "your-super-secret-key-change-in-production")
+ALGORITHM = os.getenv("ALGORITHM", "HS256")
+ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES", "60"))
 
 def hash_password(password: str) -> str:
     return password_hash.hash(password)
@@ -89,4 +89,4 @@ def get_current_user(
             detail="User not found"
         )
 
-    return user
+    return user

@@ -1,8 +1,11 @@
 # pyrefly: ignore [missing-import]
 from fastapi import HTTPException
+import logging
 import json
 from datetime import datetime
 from typing import List
+
+logger = logging.getLogger(__name__)
 from sqlalchemy.orm import Session
 from src.ai.gemini import generate_response
 from src.users.models import User
@@ -125,7 +128,7 @@ def chat_with_ai(db: Session, data: ChatRequest, current_user: User) -> ChatResp
     try:
         response_text = generate_response(SYSTEM_PROMPT, data.message, history=history_messages)
     except Exception as e:
-        print(f"Gemini API Error: {e}")
+        logger.exception("Gemini API Error occurred during conversation: %s", e)
         response_text = "I am having trouble connecting to the AI field assistant model right now. Please try again."
 
     ai_msg = ChatMessage(
