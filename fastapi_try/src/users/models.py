@@ -12,7 +12,7 @@ class User(Base):
 
     id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str] = mapped_column(String(100))
-    email: Mapped[str] = mapped_column(String(100))
+    email: Mapped[str] = mapped_column(String(100), unique=True, index=True, nullable=False)
     password = mapped_column(String, nullable=False)
 
     conversations: Mapped[List["Conversation"]] = relationship(

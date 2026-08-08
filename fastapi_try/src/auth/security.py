@@ -1,5 +1,10 @@
 import os
+from pathlib import Path
 from datetime import datetime, timedelta, timezone
+from dotenv import load_dotenv
+
+BASE_DIR = Path(__file__).resolve().parents[2]
+load_dotenv(BASE_DIR / ".env")
 
 # pyrefly: ignore [missing-import]
 from fastapi import Depends, HTTPException
@@ -18,7 +23,10 @@ oauth2_scheme = OAuth2PasswordBearer(
     tokenUrl="/auth/login"
 )
 
-SECRET_KEY = os.getenv("SECRET_KEY", "your-super-secret-key-change-in-production")
+SECRET_KEY = os.getenv("SECRET_KEY")
+if not SECRET_KEY:
+    raise RuntimeError("SECRET_KEY environment variable must be set — app will not start without it")
+
 ALGORITHM = os.getenv("ALGORITHM", "HS256")
 ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES", "60"))
 

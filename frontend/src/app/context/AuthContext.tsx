@@ -68,8 +68,9 @@ function writeAuthStorage(state: AuthState, persist: boolean) {
   window.localStorage.removeItem(AUTH_STORAGE_KEY);
   window.sessionStorage.removeItem(AUTH_SESSION_KEY);
 
+  // Default to sessionStorage to prevent persistent XSS exposure of tokens in localStorage
   if (persist) {
-    window.localStorage.setItem(AUTH_STORAGE_KEY, serialized);
+    window.sessionStorage.setItem(AUTH_SESSION_KEY, serialized);
   } else {
     window.sessionStorage.setItem(AUTH_SESSION_KEY, serialized);
   }
