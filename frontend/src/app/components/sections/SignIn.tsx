@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 import i18n from "../../i18n";
 import { I18nextProvider } from "react-i18next";
 import { motion, AnimatePresence } from "framer-motion";
-import { loginUser } from "../../../../api/auth";
+import { loginUser } from "../../../api/auth";
 import {
   ChevronRight,
   Leaf,

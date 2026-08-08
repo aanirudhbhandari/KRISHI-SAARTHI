@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 import { I18nextProvider } from "react-i18next";
 import i18n from "../../i18n";
 import { motion, AnimatePresence } from "framer-motion";
-import { registerUser } from "../../../../api/auth";
+import { registerUser } from "../../../api/auth";
 import {
   ArrowLeft,
   AlertCircle,

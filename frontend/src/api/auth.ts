@@ -1,5 +1,6 @@
 import { apiFetch } from "./client";
 
+
 export interface RegisterRequest {
     name: string;
     email: string;
