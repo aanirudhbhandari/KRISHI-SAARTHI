@@ -304,12 +304,11 @@ function ImageBubble({ file }: { file: string }) {
 function RecommendationCard({ rec, lang, labels }: { rec: Recommendation; lang: Lang; labels: Record<string, string> }) {
   return (
     <div
-      className="rounded-2xl overflow-hidden"
+      className="rounded-2xl overflow-hidden shadow-md transition-colors"
       style={{
         background: "var(--card)",
         border: "1px solid var(--border)",
         maxWidth: "520px",
-        boxShadow: "0 4px 20px rgba(45,106,47,0.08)",
       }}
     >
       {/* Header */}
@@ -318,14 +317,15 @@ function RecommendationCard({ rec, lang, labels }: { rec: Recommendation; lang: 
         style={{ background: "var(--primary)", borderBottom: "none" }}
       >
         <div className="flex items-center gap-2">
-          <FlaskConical size={16} color="#a5d67a" />
+          <FlaskConical size={16} style={{ color: "var(--primary-foreground)" }} />
           <span
             style={{
               fontFamily: "'DM Mono', monospace",
               fontSize: "0.72rem",
               letterSpacing: "0.08em",
-              color: "#a5d67a",
+              color: "var(--primary-foreground)",
               textTransform: "uppercase",
+              fontWeight: 700,
             }}
           >
             AI Field Report
@@ -333,10 +333,10 @@ function RecommendationCard({ rec, lang, labels }: { rec: Recommendation; lang: 
         </div>
         <div
           className="flex items-center gap-1.5 px-2.5 py-0.5 rounded-full"
-          style={{ background: "rgba(165,214,122,0.2)", border: "1px solid rgba(165,214,122,0.35)" }}
+          style={{ background: "rgba(0,0,0,0.15)", border: "1px solid rgba(255,255,255,0.25)" }}
         >
-          <div className="w-1.5 h-1.5 rounded-full" style={{ background: "#a5d67a" }} />
-          <span style={{ fontFamily: "'DM Mono', monospace", fontSize: "0.7rem", color: "#a5d67a" }}>
+          <div className="w-1.5 h-1.5 rounded-full" style={{ background: "var(--primary-foreground)" }} />
+          <span style={{ fontFamily: "'DM Mono', monospace", fontSize: "0.7rem", color: "var(--primary-foreground)", fontWeight: 600 }}>
             {rec.confidence}% {labels.confidence}
           </span>
         </div>
@@ -345,7 +345,7 @@ function RecommendationCard({ rec, lang, labels }: { rec: Recommendation; lang: 
       {/* Diagnosis */}
       <div className="px-5 py-4" style={{ borderBottom: "1px solid var(--border)" }}>
         <div className="flex items-center gap-2 mb-2">
-          <CheckCircle2 size={14} color="var(--accent)" />
+          <CheckCircle2 size={14} style={{ color: "var(--accent)" }} />
           <span
             style={{
               fontFamily: "'DM Mono', monospace",
@@ -353,6 +353,7 @@ function RecommendationCard({ rec, lang, labels }: { rec: Recommendation; lang: 
               letterSpacing: "0.08em",
               color: "var(--accent)",
               textTransform: "uppercase",
+              fontWeight: 700,
             }}
           >
             {labels.diagnosis}
@@ -366,7 +367,7 @@ function RecommendationCard({ rec, lang, labels }: { rec: Recommendation; lang: 
       {/* Treatment steps */}
       <div className="px-5 py-4" style={{ borderBottom: "1px solid var(--border)" }}>
         <div className="flex items-center gap-2 mb-3">
-          <Sprout size={14} color="var(--accent)" />
+          <Sprout size={14} style={{ color: "var(--accent)" }} />
           <span
             style={{
               fontFamily: "'DM Mono', monospace",
@@ -374,6 +375,7 @@ function RecommendationCard({ rec, lang, labels }: { rec: Recommendation; lang: 
               letterSpacing: "0.08em",
               color: "var(--accent)",
               textTransform: "uppercase",
+              fontWeight: 700,
             }}
           >
             {labels.treatment}
@@ -391,7 +393,7 @@ function RecommendationCard({ rec, lang, labels }: { rec: Recommendation; lang: 
                     fontFamily: "'DM Mono', monospace",
                     fontSize: "0.65rem",
                     fontWeight: 700,
-                    color: "var(--primary)",
+                    color: "var(--accent)",
                   }}
                 >
                   {t.step}
@@ -413,14 +415,15 @@ function RecommendationCard({ rec, lang, labels }: { rec: Recommendation; lang: 
       {/* Dosage box */}
       <div className="px-5 py-4" style={{ borderBottom: "1px solid var(--border)" }}>
         <div className="flex items-center gap-2 mb-2">
-          <FlaskConical size={14} color="var(--primary)" />
+          <FlaskConical size={14} style={{ color: "var(--accent)" }} />
           <span
             style={{
               fontFamily: "'DM Mono', monospace",
               fontSize: "0.7rem",
               letterSpacing: "0.08em",
-              color: "var(--primary)",
+              color: "var(--accent)",
               textTransform: "uppercase",
+              fontWeight: 700,
             }}
           >
             {labels.dosage}
@@ -430,10 +433,10 @@ function RecommendationCard({ rec, lang, labels }: { rec: Recommendation; lang: 
           className="px-4 py-3 rounded-xl"
           style={{
             background: "var(--secondary)",
-            border: "1.5px solid rgba(45,106,47,0.25)",
+            border: "1.5px solid var(--border)",
             fontFamily: "'DM Mono', monospace",
             fontSize: "0.82rem",
-            color: "var(--primary)",
+            color: "var(--foreground)",
             lineHeight: 1.6,
           }}
         >
@@ -445,23 +448,26 @@ function RecommendationCard({ rec, lang, labels }: { rec: Recommendation; lang: 
       <div className="px-5 py-4" style={{ borderBottom: "1px solid var(--border)" }}>
         <div
           className="flex gap-3 px-4 py-3 rounded-xl"
-          style={{ background: "rgba(212,24,61,0.06)", border: "1px solid rgba(212,24,61,0.2)" }}
+          style={{ background: "rgba(239, 68, 68, 0.1)", border: "1px solid rgba(239, 68, 68, 0.3)" }}
         >
-          <AlertTriangle size={16} color="#d4183d" className="flex-shrink-0 mt-0.5" />
+          <AlertTriangle size={16} className="flex-shrink-0 mt-0.5 text-red-600 dark:text-red-400" />
           <div>
             <p
+              className="text-red-600 dark:text-red-400"
               style={{
                 fontFamily: "'DM Mono', monospace",
                 fontSize: "0.68rem",
                 letterSpacing: "0.08em",
-                color: "#d4183d",
+                fontWeight: 700,
                 textTransform: "uppercase",
                 marginBottom: "0.25rem",
               }}
             >
               {labels.warning}
             </p>
-            <p style={{ fontSize: "0.82rem", color: "#9b1530", lineHeight: 1.55 }}>{lang === "hi" && rec.warningHindi ? rec.warningHindi : rec.warning}</p>
+            <p className="text-red-700 dark:text-red-300" style={{ fontSize: "0.82rem", lineHeight: 1.55 }}>
+              {lang === "hi" && rec.warningHindi ? rec.warningHindi : rec.warning}
+            </p>
           </div>
         </div>
       </div>
@@ -480,7 +486,9 @@ function RecommendationCard({ rec, lang, labels }: { rec: Recommendation; lang: 
         >
           {labels.followUp}
         </p>
-        <p style={{ fontSize: "0.85rem", color: "var(--foreground)", lineHeight: 1.6 }}>{lang === "hi" && rec.followUpHindi ? rec.followUpHindi : rec.followUp}</p>
+        <p style={{ fontSize: "0.85rem", color: "var(--foreground)", lineHeight: 1.6 }}>
+          {lang === "hi" && rec.followUpHindi ? rec.followUpHindi : rec.followUp}
+        </p>
       </div>
     </div>
   );
@@ -525,7 +533,7 @@ function MessageBubble({
           className="w-8 h-8 rounded-full flex-shrink-0 flex items-center justify-center mt-1"
           style={{ background: "var(--accent)" }}
         >
-          <Leaf size={14} color="#fff" />
+          <Leaf size={14} color="var(--accent-foreground)" />
         </div>
         <div className="flex flex-col gap-1">
           <span
@@ -554,13 +562,14 @@ function MessageBubble({
         className="w-8 h-8 rounded-full flex-shrink-0 flex items-center justify-center"
         style={{
           background: isUser ? "var(--primary)" : "var(--accent)",
+          color: isUser ? "var(--primary-foreground)" : "var(--accent-foreground)",
           flexShrink: 0,
         }}
       >
         {isUser ? (
-          <span style={{ color: "#fff", fontSize: "0.75rem", fontWeight: 700 }}>R</span>
+          <span style={{ fontSize: "0.75rem", fontWeight: 700 }}>R</span>
         ) : (
-          <Leaf size={14} color="#fff" />
+          <Leaf size={14} />
         )}
       </div>
       <div className={`flex flex-col ${isUser ? "items-end" : "items-start"} gap-1 max-w-[72%]`}>
@@ -574,10 +583,10 @@ function MessageBubble({
           {isUser ? labels.you : labels.krishi} · {msg.timestamp}
         </span>
         <div
-          className="px-4 py-3 rounded-2xl"
+          className="px-4 py-3 rounded-2xl shadow-sm"
           style={{
-            background: isUser ? "var(--primary)" : "var(--card)",
-            color: isUser ? "var(--primary-foreground)" : "var(--foreground)",
+            background: isUser ? "var(--primary)" : "var(--chat-bubble-ai-bg)",
+            color: isUser ? "var(--primary-foreground)" : "var(--chat-bubble-ai-text)",
             border: isUser ? "none" : "1px solid var(--border)",
             borderBottomRightRadius: isUser ? "4px" : undefined,
             borderBottomLeftRadius: !isUser ? "4px" : undefined,
@@ -588,7 +597,7 @@ function MessageBubble({
           {isUser ? (
             lang === "hi" && msg.textHindi ? msg.textHindi : msg.text
           ) : (
-            <div className="prose prose-sm max-w-none">
+            <div className="prose prose-sm dark:prose-invert max-w-none text-foreground dark:text-emerald-50">
               <ReactMarkdown remarkPlugins={[remarkGfm]}>
                 {lang === "hi" && msg.textHindi ? msg.textHindi : msg.text}
               </ReactMarkdown>
@@ -765,10 +774,10 @@ export default function ChatbotPage() {
 
   return (
     <div
-      className="flex h-screen overflow-hidden"
+      className="flex h-screen overflow-hidden transition-colors"
       style={{
         fontFamily: "'Inter', sans-serif",
-        background: "linear-gradient(135deg, #f6fdf0 0%, #ebf8e2 45%, #f8fdf4 100%)",
+        background: "var(--chat-gradient)",
       }}
     >
       {/* ── Sidebar overlay on mobile ── */}
@@ -1009,7 +1018,7 @@ export default function ChatbotPage() {
           }}
         >
           <div className="flex items-center gap-3">
-            {/* Mobile  toggle */}
+            {/* Mobile toggle */}
             <button
               className="md:hidden"
               onClick={() => setSidebarOpen(true)}
@@ -1020,9 +1029,9 @@ export default function ChatbotPage() {
 
             <div
               className="w-9 h-9 rounded-full flex items-center justify-center"
-              style={{ background: "var(--accent)" }}
+              style={{ background: "var(--accent)", color: "var(--accent-foreground)" }}
             >
-              <Leaf size={16} color="#fff" />
+              <Leaf size={16} />
             </div>
             <div>
               <p
@@ -1110,14 +1119,17 @@ export default function ChatbotPage() {
             {messages.length === 0 && !typing ? (
               <div className="flex h-full min-h-[420px] items-center justify-center">
                 <div
-                  className="w-full max-w-xl rounded-[28px] border border-[rgba(45,106,47,0.12)] p-8 text-center shadow-[0_20px_60px_rgba(45,106,47,0.08)] backdrop-blur-sm"
-                  style={{ background: "rgba(255,255,255,0.78)" }}
+                  className="w-full max-w-xl rounded-[28px] border p-8 text-center shadow-lg transition-colors"
+                  style={{
+                    background: "var(--chat-empty-card-bg)",
+                    borderColor: "var(--border)",
+                  }}
                 >
                   <div
-                    className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full"
-                    style={{ background: "linear-gradient(135deg, #7fbf4d 0%, #4f8f34 100%)" }}
+                    className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full shadow-md"
+                    style={{ background: "var(--primary)", color: "var(--primary-foreground)" }}
                   >
-                    <Leaf size={24} color="#fff" />
+                    <Leaf size={24} />
                   </div>
                   <h3
                     style={{
@@ -1148,11 +1160,11 @@ export default function ChatbotPage() {
                     ].map((chip) => (
                       <span
                         key={chip}
-                        className="rounded-full px-3 py-1.5 text-sm"
+                        className="rounded-full px-3 py-1.5 text-sm transition-colors"
                         style={{
-                          background: "rgba(122,182,72,0.12)",
-                          color: "var(--primary)",
-                          border: "1px solid rgba(122,182,72,0.2)",
+                          background: "var(--secondary)",
+                          color: "var(--accent)",
+                          border: "1px solid var(--border)",
                         }}
                       >
                         {chip}
@@ -1175,11 +1187,10 @@ export default function ChatbotPage() {
 
         {/* Input bar */}
         <div
-          className="flex-shrink-0 px-5 md:px-8 py-4"
+          className="flex-shrink-0 px-5 md:px-8 py-4 transition-colors"
           style={{
-            background: "rgba(255,255,255,0.72)",
-            borderTop: "1px solid rgba(45,106,47,0.12)",
-            backdropFilter: "blur(10px)",
+            background: "var(--chat-input-bg)",
+            borderTop: "1px solid var(--border)",
           }}
         >
           <div className="max-w-3xl mx-auto">
@@ -1188,11 +1199,11 @@ export default function ChatbotPage() {
                 <button
                   key={suggestion}
                   onClick={() => handleSuggestionClick(suggestion)}
-                  className="rounded-full border px-3 py-2 text-left text-sm transition-all hover:-translate-y-0.5 hover:bg-[rgba(122,182,72,0.12)]"
+                  className="rounded-full border px-3 py-2 text-left text-sm transition-all hover:-translate-y-0.5"
                   style={{
-                    background: "rgba(255,255,255,0.8)",
-                    borderColor: "rgba(45,106,47,0.14)",
-                    color: "var(--primary)",
+                    background: "var(--chat-suggestion-bg)",
+                    borderColor: "var(--chat-suggestion-border)",
+                    color: "var(--foreground)",
                   }}
                 >
                   {suggestion}
@@ -1201,13 +1212,11 @@ export default function ChatbotPage() {
             </div>
 
             <div
-              className="flex items-end gap-2 px-4 py-3 rounded-2xl"
+              className="flex items-end gap-2 px-4 py-3 rounded-2xl transition-colors shadow-sm"
               style={{
-                background: "var(--background)",
+                background: "var(--card)",
                 border: "1.5px solid var(--border)",
-                transition: "border-color 0.2s",
               }}
-              onFocus={() => { }}
             >
               {/* Attach */}
               <input
@@ -1301,7 +1310,7 @@ export default function ChatbotPage() {
                 className="flex-shrink-0 w-8 h-8 rounded-lg flex items-center justify-center transition-all hover:opacity-90 disabled:opacity-30"
                 style={{
                   background: input.trim() ? "var(--primary)" : "var(--muted)",
-                  color: "#fff",
+                  color: input.trim() ? "var(--primary-foreground)" : "var(--muted-foreground)",
                 }}
               >
                 <Send size={17} />
