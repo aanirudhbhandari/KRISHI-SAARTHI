@@ -216,12 +216,12 @@ const LABELS: Record<Lang, Record<string, string>> = {
 
 const SUGGESTIONS: Record<Lang, string[]> = {
   en: [
-    "What is causing yellow leaves on my wheat?",
+    "Who is you creator? 😎",
     "How can I control fungal growth in my field?",
     "Give me a quick irrigation plan for today.",
   ],
   hi: [
-    "मेरी गेहूं की पत्तियों पर पीला रंग क्यों आ रहा है?",
+    "तुम तुम्हारे निर्माता कौन हो? 😎",
     "मेरे खेत में कवक वृद्धि को कैसे नियंत्रित करूं?",
     "आज के लिए एक त्वरित सिंचाई योजना दीजिए।",
   ],
