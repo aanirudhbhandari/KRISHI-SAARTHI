@@ -236,7 +236,7 @@ const LABELS: Record<Lang, Record<string, string>> = {
 
 const SUGGESTIONS: Record<Lang, string[]> = {
   en: [
-    "Who is you creator? 😎",
+    "Who is your creator? 😎",
     "How can I control fungal growth in my field?",
     "Give me a quick irrigation plan for today.",
   ],
@@ -865,11 +865,11 @@ export default function ChatbotPage() {
       const body =
         message.type === "recommendation" && message.recommendation
           ? [
-              `${labels.diagnosis}: ${lang === "hi" && message.recommendation.diagnosisHindi ? message.recommendation.diagnosisHindi : message.recommendation.diagnosis}`,
-              `${labels.treatment}: ${message.recommendation.treatment
-                .map((step) => `${step.step}. ${lang === "hi" && step.actionHindi ? step.actionHindi : step.action}`)
-                .join("; ")}`,
-            ].join("\n")
+            `${labels.diagnosis}: ${lang === "hi" && message.recommendation.diagnosisHindi ? message.recommendation.diagnosisHindi : message.recommendation.diagnosis}`,
+            `${labels.treatment}: ${message.recommendation.treatment
+              .map((step) => `${step.step}. ${lang === "hi" && step.actionHindi ? step.actionHindi : step.action}`)
+              .join("; ")}`,
+          ].join("\n")
           : lang === "hi" && message.textHindi
             ? message.textHindi
             : message.text || "";
